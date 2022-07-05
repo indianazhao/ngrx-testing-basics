@@ -6,7 +6,8 @@ import { selectRouteParam } from '../router.selectors';
 
 export const selectLlamas = createFeatureSelector<AppState, Llama[]>('llamas');
 
-const selectLlamaIdRouteParam = selectRouteParam(appRoutesNames.LLAMA_ID_PARAM);
+// 必須 export，否則無法 fake it
+export const selectLlamaIdRouteParam = selectRouteParam(appRoutesNames.LLAMA_ID_PARAM);
 
 export const selectLlamaByIdParam = createSelector(
   selectLlamas,
