@@ -92,12 +92,8 @@ describe('LlamasEffects', () => {
         // 我們關心的是 action，不是直接檢查 fakeLlamas
         // expect(observerSpy.getValues()).toEqual([fakeLlamas2, fakeLlamas1]);
 
-        const expectedActionFakeLlama1 = loadLlamaSuccess({ llamas: fakeLlamas1 });
         const expectedActionFakeLlama2 = loadLlamaSuccess({ llamas: fakeLlamas2 });
-        expect(observerSpy.getValues()).toEqual([
-          expectedActionFakeLlama2,
-          expectedActionFakeLlama1,
-        ]);
+        expect(observerSpy.getValues()).toEqual([expectedActionFakeLlama2]);
       });
     });
   });
