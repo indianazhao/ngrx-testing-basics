@@ -1,12 +1,14 @@
-import { LlamaRemoteService } from './llama-remote.service';
+import { loadLlamaSuccess } from './llamas-api.actions';
+import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { provideAutoSpy, Spy } from 'jasmine-auto-spies';
-import { llamaPageEnter } from 'src/app/llama-page/llama-page.actions';
-import { frontPageEnter } from './../../front/front.actions';
-import { TestBed } from '@angular/core/testing';
 import { SubscriberSpy, subscribeSpyTo } from '@hirez_io/observer-spy';
 import { Action } from '@ngrx/store';
-import { Observable, of } from 'rxjs';
 import { provideMockActions } from '@ngrx/effects/testing';
+import { Observable, of } from 'rxjs';
+import { createFakeLlama } from 'src/app/_types/llama.fake';
+import { LlamaRemoteService } from './llama-remote.service';
+import { llamaPageEnter } from 'src/app/llama-page/llama-page.actions';
+import { frontPageEnter } from './../../front/front.actions';
 import { Llama } from 'src/app/_types/llama.type';
 import { LlamasEffects } from './llamas.effects';
 
@@ -55,6 +57,47 @@ describe('LlamasEffects', () => {
 
       Then('expect 2 results', () => {
         expect(observerSpy.getValuesLength()).toBe(2);
+      });
+    });
+
+    // 接下來針對 Just Enough Princple 中的 Operators 進行測試 Flattening operators testing
+    describe(`GIVEN 2 requests, first one with a delay of 1000ms
+              WHEN subscribing`, () => {
+      let fakeLlamas1: Llama[];
+      let fakeLlamas2: Llama[];
+
+      Given(() => {
+        fakeLlamas1 = [createFakeLlama({ name: 'FIRST REQUEST LLAMA' })];
+        fakeLlamas2 = [createFakeLlama({ name: 'SECOND REQUEST LLAMA' })];
+
+        // 我們不關心有哪些 action，只關心有 2 個 actions
+        fakeActions$ = of(frontPageEnter, frontPageEnter);
+
+        // jasmine-auto-spies 提供了 nextWithPerCall() 這個方便的函式：
+        // 這裡每次呼叫 getMany()，就會依序呼叫後面提供陣列的元素 (按照給定的 delay)
+        llamaRemoteServiceSpy.getMany.and.nextWithPerCall([
+          { value: fakeLlamas1, delay: 1000 },
+          { value: fakeLlamas2 },
+        ]);
+      });
+
+      When(
+        fakeAsync(() => {
+          observerSpy = subscribeSpyTo(serviceUnderTest.loadLlamas$);
+          tick(1000);
+        }),
+      );
+
+      Then('the second request should be first', () => {
+        // 我們關心的是 action，不是直接檢查 fakeLlamas
+        // expect(observerSpy.getValues()).toEqual([fakeLlamas2, fakeLlamas1]);
+
+        const expectedActionFakeLlama1 = loadLlamaSuccess({ llamas: fakeLlamas1 });
+        const expectedActionFakeLlama2 = loadLlamaSuccess({ llamas: fakeLlamas2 });
+        expect(observerSpy.getValues()).toEqual([
+          expectedActionFakeLlama2,
+          expectedActionFakeLlama1,
+        ]);
       });
     });
   });
