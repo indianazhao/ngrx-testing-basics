@@ -3,7 +3,7 @@
 
 module.exports = function (config) {
   config.set({
-    
+
     plugins: [
       require('karma-jasmine'),
       require('@hirez_io/karma-jasmine-given'),
@@ -13,7 +13,7 @@ module.exports = function (config) {
       require('karma-coverage-istanbul-reporter'),
       require('@angular-devkit/build-angular/plugins/karma')
     ],
-    
+
     // TRIGGER
     autoWatch: true,
     singleRun: false,
@@ -51,10 +51,10 @@ module.exports = function (config) {
     },
 
     coverageIstanbulReporter: {
-      dir: require('path').join(__dirname, './coverage/llama-date-admin'),
+      dir: require('path').join(__dirname, './coverage/ngrx-testing-basics'),
       reports: [ 'html', 'lcovonly', 'text-summary' ],
       fixWebpackSourcePaths: true
     }
-    
+
   });
 };

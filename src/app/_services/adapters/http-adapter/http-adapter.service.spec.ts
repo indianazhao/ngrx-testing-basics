@@ -17,7 +17,7 @@ describe('HttpAdapterService', () => {
   Given(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientModule],
-      providers: [HttpAdapterService]
+      providers: [HttpAdapterService],
     });
 
     serviceUnderTest = TestBed.inject(HttpAdapterService);
@@ -40,11 +40,11 @@ describe('HttpAdapterService', () => {
     Given(() => {
       fakeUrlArg = '/fake';
       fakeBodyArg = {
-        fake: 'body'
+        fake: 'body',
       };
 
       expectedReturnedResult = {
-        fake: 'result'
+        fake: 'result',
       };
 
       serverMock.patch(fakeUrlArg, (request, response) => {
@@ -67,11 +67,11 @@ describe('HttpAdapterService', () => {
       actualBodySent = undefined;
       fakeUrlArg = '/fake';
       fakeBodyArg = {
-        fake: 'body'
+        fake: 'body',
       };
 
       expectedReturnedResult = {
-        fake: 'result'
+        fake: 'result',
       };
 
       serverMock.post(fakeUrlArg, (request, response) => {
@@ -95,7 +95,7 @@ describe('HttpAdapterService', () => {
       fakeUrlArg = '/fake';
 
       expectedReturnedResult = {
-        fake: 'result'
+        fake: 'result',
       };
 
       serverMock.get(fakeUrlArg, (request, response) => {
@@ -106,7 +106,7 @@ describe('HttpAdapterService', () => {
     When(
       fakeAsync(() => {
         serviceUnderTest.get(fakeUrlArg).subscribe((result) => (actualResult = result));
-      })
+      }),
     );
 
     Then(() => {
